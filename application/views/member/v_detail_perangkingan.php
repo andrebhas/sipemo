@@ -23,10 +23,10 @@
                       <div class="panel panel-default">
                         <div class="panel-body">
  Hasil Input User :<br>
-            Harga Mobil : <?php echo $nama_harga_mobil->harga_mobil ?><br>
+            Harga Mobil : <?php echo $nama_harga_mobili ?><br>
             Kategori Kendaraan : <?php echo $nama_kategori_kendaraan->nama_kategori ?><br>
             Kapasitas Penumpang : <?php echo $nama_kapasitas_penumpang->jumlah_kapasitas ?><br>
-            Purna Jual : <?php echo $nama_purna_jual->range_harga ?><br><br>
+            Purna Jual : <?php echo $nama_purna_juali ?><br><br>
 
 <table class="table table-bordered">
     <tr>
@@ -103,10 +103,24 @@
                                           <td><?php echo $dataa->warna; ?></td>
                                           <td><?php echo $dataa->ukuran_cc; ?></td>
                                           <td><?php echo $dataa->transmisi; ?></td>
-                                          <td><?php echo $dataa->harga_mobil; ?></td>
+                                          <td><?php 
+                                            $range_harga_mobil = $this->m_kriteria->get_range_harga($dataa->id_harga_mobil);
+                                            foreach ($range_harga_mobil as $r) {
+                                                $range_harga_m[] = $r->harga;
+                                            }
+                                            $nama_harga_mobili = "Rp. ".min($range_harga_m)." - Rp. ".max($range_harga_m);
+                                            echo  $nama_harga_mobili;
+                                          ?></td>
                                           <td><?php echo $dataa->nama_kategori; ?></td>
                                           <td><?php echo $dataa->jumlah_kapasitas; ?></td>
-                                          <td><?php echo $dataa->range_harga; ?></td>
+                                          <td><?php 
+                                            $range_purna_jual = $this->m_kriteria->get_range_purna($dataa->id_purna_jual);
+                                            foreach ($range_purna_jual as $r) {
+                                                $range_harga_p[] = $r->harga;
+                                            }
+                                            $nama_purna_juali = "Rp. ".min($range_harga_p)." - Rp. ".max($range_harga_p);
+                                            echo $nama_purna_juali; 
+                                          ?></td>
                                           <td><?php echo $dataa->nilai_smart; ?></td>
                                     </tbody>
                                        <?php

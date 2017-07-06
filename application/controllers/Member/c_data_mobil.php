@@ -7,8 +7,10 @@ class C_data_mobil extends CI_Controller{
 		parent::__construct();		
 		$this->load->model('M_data_mobil');
 		$this->load->model('m_hitung');
+		$this->load->model('m_harga_mobil');
+		$this->load->model('m_purna_jual');
+		$this->load->model('m_kriteria');
 		$this->load->helper('url');
-
 	}
 
 	function index(){	 	
@@ -35,9 +37,19 @@ class C_data_mobil extends CI_Controller{
         $rangking = $this->m_hitung->perangkingan($nilaiSmart,$harga_mobil,$kategori_kendaraan,$kapasitas_penumpang,$purna_jual);
 
         $nama_harga_mobil = $this->m_hitung->getNamaKriteria('harga_mobil',$harga_mobil);
+		$range_harga_mobil = $this->m_kriteria->get_range_harga($harga_mobil);
+		foreach ($range_harga_mobil as $r) {
+			$range_harga_m[] = $r->harga;
+		}
+		$nama_harga_mobili = "Rp. ".min($range_harga_m)." - Rp. ".max($range_harga_m);
         $nama_kategori_kendaraan = $this->m_hitung->getNamaKriteria('kategori_kendaraan',$kategori_kendaraan);
         $nama_kapasitas_penumpang = $this->m_hitung->getNamaKriteria('kapasitas_penumpang',$kapasitas_penumpang);
         $nama_purna_jual = $this->m_hitung->getNamaKriteria('purna_jual',$purna_jual);
+		$range_purna_jual = $this->m_kriteria->get_range_purna($purna_jual);
+		foreach ($range_purna_jual as $r) {
+			$range_harga_p[] = $r->harga;
+		}
+		$nama_purna_juali = "Rp. ".min($range_harga_p)." - Rp. ".max($range_harga_p);
 
         $nilaiNormalisasi_harga_mobil = $this->m_hitung->getNilaiNormalisasi('K01')->normalisasi;
         $nilaiNormalisasi_kategori_kendaraan = $this->m_hitung->getNilaiNormalisasi('K02')->normalisasi;
@@ -51,9 +63,11 @@ class C_data_mobil extends CI_Controller{
         	'kapasitas_penumpang' => $kapasitas_penumpang,
         	'purna_jual' => $purna_jual,
         	'nama_harga_mobil' => $nama_harga_mobil,
+			'nama_harga_mobili' => $nama_harga_mobili,
         	'nama_kategori_kendaraan' => $nama_kategori_kendaraan,
         	'nama_kapasitas_penumpang' => $nama_kapasitas_penumpang,
         	'nama_purna_jual' => $nama_purna_jual,
+			'nama_purna_juali' => $nama_purna_juali,
         	'nilaiNormalisasi_harga_mobil' => $nilaiNormalisasi_harga_mobil,
         	'nilaiNormalisasi_kapasitas_penumpang' => $nilaiNormalisasi_kapasitas_penumpang,
         	'nilaiNormalisasi_kategori_kendaraan' => $nilaiNormalisasi_kategori_kendaraan,

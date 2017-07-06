@@ -38,9 +38,9 @@ class M_kriteria extends CI_Model{
         $query = $this->db->query("SELECT * FROM kapasitas_penumpang");
         return $query;
     }
-    public function md_getNilaipurna_jual() { 
-        $query = $this->db->query("SELECT * FROM purna_jual");
-        return $query;
+    public function md_getNilaipurna_jual($harga_m) { 
+        $query = $this->db->query("SELECT DISTINCT id_purna_jual FROM `detail_purna_jual` WHERE `harga` < ".$harga_m." ORDER BY `harga` desc LIMIT 2");
+        return $query->result_array();
     }
 
     function get_range_harga($id_harga_mobil)

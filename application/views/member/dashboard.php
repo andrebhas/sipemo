@@ -81,14 +81,12 @@
                                             foreach ($harga_mobil->result_array() as $row) {
                                                 $range = $this->m_kriteria->get_range_harga($row['id_harga_mobil']);
                                             ?>
-                                                <option value="<?php echo $row['id_harga_mobil'] ?>">
+                                                <option value="<?php echo $row['id_harga_mobil'] ?>"
                                             <?php
-                                                $c_range = count($range);
-                                                $i = 0;
-                                                $first = true;
                                                 foreach ($range as $r) {
                                                     $ar_range[$row['id_harga_mobil']][] = $r->harga;
                                                 }
+                                                echo " harga_min='".min($ar_range[$row['id_harga_mobil']])."' >";
                                                 echo "Rp. ".min($ar_range[$row['id_harga_mobil']])." - Rp. ".max($ar_range[$row['id_harga_mobil']]);
                                             ?> 
                                                 </option>
@@ -99,8 +97,9 @@
                                             <label>Kategori Kendaraan</label>
                                             <select id="kategori_kendaraan" name="id_kategori_kendaraan" class="form-control" required="required">
                                             <option value="">Pilih....</option>
-                                               <?php foreach ($kategori_kendaraan->result_array() as $row) {
-                                            for ($i = 0; $i < count($row); $i++)?> 
+                                            <?php 
+                                               foreach ($kategori_kendaraan->result_array() as $row) {
+                                            ?> 
                                             <option value="<?php echo $row['id_kategori_kendaraan'] ?>"><?php echo $row['nama_kategori']; ?></option>
                                             <?php } ?>
                                             </select>
@@ -109,8 +108,9 @@
                                             <label>Kapasitas Penumpang</label>
                                             <select id="kapasitas_penumpang" name="id_kapasitas_penumpang" class="form-control" required="required">
                                             <option value="">Pilih....</option>
-                                               <?php foreach ($kapasitas_penumpang->result_array() as $row) {
-                                            for ($i = 0; $i < count($row); $i++)?> 
+                                               <?php 
+                                               foreach ($kapasitas_penumpang->result_array() as $row) {
+                                                ?> 
                                             <option value="<?php echo $row['id_kapasitas_penumpang'] ?>"><?php echo $row['jumlah_kapasitas']; ?></option>
                                             <?php } ?>
                                             </select>
@@ -119,9 +119,7 @@
                                             <label>Purna Jual</label>
                                             <select id="purna_jual" name="id_purna_jual" class="form-control" required="required">
                                             <option value="">Pilih....</option>
-                                              <?php foreach ($purna_jual->result_array() as $row) { ?> 
-                                            <option value="<?php echo $row['id_purna_jual'] ?>"><?php echo $row['harga']; ?></option>
-                                            <?php } ?>
+                                             
                                             </select>
                                         </div>
                                         <input type="hidden" name="id_user" value="<?php echo $this->session->userdata('id_user') ?>"/>           
@@ -139,6 +137,19 @@
     <script src="<?php echo base_url() ?>assets/plugins/dataTables/jquery.dataTables.js"></script>
     <script src="<?php echo base_url() ?>assets/plugins/dataTables/dataTables.bootstrap.js"></script>
 <script type="text/javascript">
+    var harga_mobil = $('#harga_mobil option:selected', this).attr('harga_min');
+    $('#harga_mobil').on('change', function() {
+        $("#purna_jual option").remove();
+        var element = $("option:selected", this);
+        var myTag = element.attr("harga_min");
+        var link = '<?php echo base_url() ?>'+'member/member/json_purna_jual/'+myTag;
+        $.getJSON( link, function( data ) {
+            $.each( data, function( key, val ) {
+                $('#purna_jual').append('<option value="'+val.id_purna_jual+'">Rp. '+val.min_purna+' - Rp.'+val.max_purna+'</option>');
+            });
+        });
+    });
+
     $('#kategori_kendaraan').on('change', function() {
       var isi = this.value;
       if (isi == 'SK203') {
