@@ -106,20 +106,18 @@
                                           <td><?php 
                                             $range_harga_mobil = $this->m_kriteria->get_range_harga($dataa->id_harga_mobil);
                                             foreach ($range_harga_mobil as $r) {
-                                                $range_harga_m[] = $r->harga;
+                                                $range_harga_m[$dataa->id_harga_mobil][] = $r->harga;
                                             }
-                                            $nama_harga_mobili = "Rp. ".min($range_harga_m)." - Rp. ".max($range_harga_m);
-                                            echo  $nama_harga_mobili;
+                                            echo "Rp. ".min($range_harga_m[$dataa->id_harga_mobil])." - Rp. ".max($range_harga_m[$dataa->id_harga_mobil]);
                                           ?></td>
                                           <td><?php echo $dataa->nama_kategori; ?></td>
                                           <td><?php echo $dataa->jumlah_kapasitas; ?></td>
                                           <td><?php 
                                             $range_purna_jual = $this->m_kriteria->get_range_purna($dataa->id_purna_jual);
                                             foreach ($range_purna_jual as $r) {
-                                                $range_harga_p[] = $r->harga;
+                                                $range_harga_p[$dataa->id_purna_jual][] = $r->harga;
                                             }
-                                            $nama_purna_juali = "Rp. ".min($range_harga_p)." - Rp. ".max($range_harga_p);
-                                            echo $nama_purna_juali; 
+                                            echo  "Rp. ".min($range_harga_p[$dataa->id_purna_jual])." - Rp. ".max($range_harga_p[$dataa->id_purna_jual]); 
                                           ?></td>
                                           <td><?php echo $dataa->nilai_smart; ?></td>
                                     </tbody>

@@ -87,7 +87,7 @@ class C_data_mobil extends CI_Controller{
 		$data['kategori_kendaraan']=$this->m_kriteria->md_getNilaikategori_kendaraan();
 		$data['harga_mobil']=$this->m_kriteria->md_getNilaiharga_mobil();
 		$data['kapasitas_penumpang']=$this->m_kriteria->md_getNilaikapasitas_penumpang();
-		$data['purna_jual']=$this->m_kriteria->md_getNilaipurna_jual();
+		//$data['purna_jual']=$this->m_kriteria->md_getNilaipurna_jual();
 
 		$this->load->view('admin/menubar');
 		$this->load->view('admin/sidebar');

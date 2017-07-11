@@ -45,38 +45,51 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Harga Mobil</label>
-                                            <select id="harga_mobil" name="id_harga_mobil" class="form-control">
-                                            <?php foreach ($harga_mobil->result_array() as $row) {
-                                            for ($i = 0; $i < count($row); $i++)?> 
-                                            <option value="<?php echo $row['id_harga_mobil'] ?>"><?php echo $row['harga_mobil']; ?></option>
+                                            <select id="harga_mobil" name="id_harga_mobil" class="form-control" required="required">
+                                            <option value="">Pilih....</option>
+                                            <?php 
+                                            foreach ($harga_mobil->result_array() as $row) {
+                                                $range = $this->m_kriteria->get_range_harga($row['id_harga_mobil']);
+                                            ?>
+                                                <option value="<?php echo $row['id_harga_mobil'] ?>"
+                                            <?php
+                                                foreach ($range as $r) {
+                                                    $ar_range[$row['id_harga_mobil']][] = $r->harga;
+                                                }
+                                                echo " harga_min='".min($ar_range[$row['id_harga_mobil']])."' >";
+                                                echo "Rp. ".min($ar_range[$row['id_harga_mobil']])." - Rp. ".max($ar_range[$row['id_harga_mobil']]);
+                                            ?> 
+                                                </option>
                                             <?php } ?>
                                             </select>
                                         </div>  
                                         <div class="form-group">
                                             <label>Kategori Kendaraan</label>
-                                            <select id="kategori_kendaraan" name="id_kategori_kendaraan" class="form-control">
-                                               <?php foreach ($kategori_kendaraan->result_array() as $row) {
-                                            for ($i = 0; $i < count($row); $i++)?> 
+                                            <select id="kategori_kendaraan" name="id_kategori_kendaraan" class="form-control" required="required">
+                                            <option value="">Pilih....</option>
+                                            <?php 
+                                               foreach ($kategori_kendaraan->result_array() as $row) {
+                                            ?> 
                                             <option value="<?php echo $row['id_kategori_kendaraan'] ?>"><?php echo $row['nama_kategori']; ?></option>
                                             <?php } ?>
                                             </select>
                                         </div> 
                                         <div class="form-group">
                                             <label>Kapasitas Penumpang</label>
-                                            <select id="kapasitas_penumpang" name="id_kapasitas_penumpang" class="form-control">
-                                               <?php foreach ($kapasitas_penumpang->result_array() as $row) {
-                                            for ($i = 0; $i < count($row); $i++)?> 
+                                            <select id="kapasitas_penumpang" name="id_kapasitas_penumpang" class="form-control" required="required">
+                                            <option value="">Pilih....</option>
+                                               <?php 
+                                               foreach ($kapasitas_penumpang->result_array() as $row) {
+                                                ?> 
                                             <option value="<?php echo $row['id_kapasitas_penumpang'] ?>"><?php echo $row['jumlah_kapasitas']; ?></option>
                                             <?php } ?>
                                             </select>
                                         </div> 
                                         <div class="form-group">
                                             <label>Purna Jual</label>
-                                            <select id="purna_jual" name="id_purna_jual" class="form-control">
-                                              <?php foreach ($purna_jual->result_array() as $row) {
-                                            for ($i = 0; $i < count($row); $i++)?> 
-                                            <option value="<?php echo $row['id_purna_jual'] ?>"><?php echo $row['range_harga']; ?></option>
-                                            <?php } ?>
+                                            <select id="purna_jual" name="id_purna_jual" class="form-control" required="required">
+                                            <option value="">Pilih....</option>
+                                             
                                             </select>
                                         </div>
                                         <input type="hidden" name="id_user" value="<?php echo $this->session->userdata('id_user') ?>"/>           
@@ -107,6 +120,47 @@
         $(document).ready(function () {
             $('#dataTables-example').dataTable();
         });
+        var harga_mobil = $('#harga_mobil option:selected', this).attr('harga_min');
+    $('#harga_mobil').on('change', function() {
+        $("#purna_jual option").remove();
+        var element = $("option:selected", this);
+        var myTag = element.attr("harga_min");
+        var link = '<?php echo base_url() ?>'+'member/member/json_purna_jual/'+myTag;
+        $.getJSON( link, function( data ) {
+            $.each( data, function( key, val ) {
+                $('#purna_jual').append('<option value="'+val.id_purna_jual+'">Rp. '+val.min_purna+' - Rp.'+val.max_purna+'</option>');
+            });
+        });
+    });
+
+    $('#kategori_kendaraan').on('change', function() {
+      var isi = this.value;
+      if (isi == 'SK203') {
+        $("#kapasitas_penumpang option[value='SK301']").hide();
+        $("#kapasitas_penumpang option[value='SK302']").hide();
+        $("#kapasitas_penumpang option[value='SK303']").hide();
+        $("#kapasitas_penumpang option[value='SK304']").show();
+        $("#kapasitas_penumpang option[value='SK305']").show();
+      } else if (isi == 'SK201'){
+        $("#kapasitas_penumpang option[value='SK301']").hide();
+        $("#kapasitas_penumpang option[value='SK302']").hide();
+        $("#kapasitas_penumpang option[value='SK303']").hide();
+        $("#kapasitas_penumpang option[value='SK304']").show();
+        $("#kapasitas_penumpang option[value='SK305']").show();
+      } else if (isi == 'SK202'){
+        $("#kapasitas_penumpang option[value='SK301']").show();
+        $("#kapasitas_penumpang option[value='SK302']").show();
+        $("#kapasitas_penumpang option[value='SK303']").show();
+        $("#kapasitas_penumpang option[value='SK304']").hide();
+        $("#kapasitas_penumpang option[value='SK305']").hide();
+      } else {
+        $("#kapasitas_penumpang option[value='SK301']").show();
+        $("#kapasitas_penumpang option[value='SK302']").show();
+        $("#kapasitas_penumpang option[value='SK303']").show();
+        $("#kapasitas_penumpang option[value='SK304']").hide();
+        $("#kapasitas_penumpang option[value='SK305']").hide();
+      }
+    })
     </script>
 
 </body>
